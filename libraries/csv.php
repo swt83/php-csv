@@ -14,7 +14,7 @@ class CSV
 	public $columns = array();
 	public $rows = array();
 	
-	public $newline = "\n";
+	public static $newline = "\n";
 
 	public static function forge()
 	{
@@ -37,7 +37,7 @@ class CSV
 		$this->rows[] = $array;
 	}
 	
-	public function build()
+	protected function build()
 	{
 		$csv = '';
 		
@@ -48,7 +48,7 @@ class CSV
 			{
 				$csv .= '"'.addslashes($label).'",';
 			}
-			$csv .= $this->newline;
+			$csv .= static::$newline;
 		}
 		
 		// rows
@@ -58,7 +58,7 @@ class CSV
 			{
 				$csv .= '"'.addslashes($field).'",';
 			}
-			$csv .= $this->newline;
+			$csv .= static::$newline;
 		}
 		
 		// return
@@ -67,7 +67,8 @@ class CSV
 	
 	public function to_file($path)
 	{
-	
+		// return
+		return File::put($path, $this->build());
 	}
 	
 	public function to_download($name)
