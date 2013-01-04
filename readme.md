@@ -13,12 +13,16 @@ You basically are building an object that contains all the data, and then doing 
 ```
 // build from scratch
 $csv = new CSV;
+$csv->row(array('Title1', 'Title2'));
+$csv->row(array('foo', 'bar'));
+$csv->row(array('foo', 'bar'));
+$csv->row(array('foo', 'bar'));
 
 // build from file
 $csv = CSV::open($path_to_file);
 ```
 
-You can do several things w/ a csv object:
+You can do several things w/ a ``CSV`` object:
 
 ```
 // to string
