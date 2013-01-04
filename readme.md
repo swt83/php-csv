@@ -13,10 +13,19 @@ You basically are building an object that contains all the data, and then doing 
 ```
 // build from scratch
 $csv = new CSV;
-$csv->row(array('Title1', 'Title2'));
+$csv->columns(array('Header1', 'Header2'));
 $csv->row(array('foo', 'bar'));
 $csv->row(array('foo', 'bar'));
 $csv->row(array('foo', 'bar'));
+
+// build from scratch en mass
+$rows = array(
+    array('foo', 'bar'),
+    array('foo', 'bar'),
+);
+$csv = new CSV;
+$csv->columns(array('Header1', 'Header2'));
+$csv->rows($rows);
 
 // build from file
 $csv = CSV::open($path_to_file);
