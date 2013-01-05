@@ -1,10 +1,18 @@
-# CSV for LaravelPHP #
+# CSV for Laravel 3 #
 
-I work w/ CSV files all the time.  Built this class to help me out.
+I work w/ CSV files all the time and needed a class to help me out.
 
 ## Install ##
 
-Normal bundle install.
+In your ``application/bundles.php`` file add the following:
+
+```
+'csv' => array('auto' => true),
+```
+
+### Dependancies
+
+* [DBUtil](https://github.com/swt83/laravel-dbutil) - Only required if you use the ``to_database()`` method.
 
 ## Usage ##
 
@@ -44,7 +52,5 @@ $csv->to_download();
 $csv->to_file($path_to_file);
 
 // to database
-$csv->to_database($name_of_table);
+$csv->to_database($name_of_table, $table_already_exists = false, $clear_existing_records = false);
 ```
-
-Note that the ``to_database()`` method will automatically construct the table based on the column names.

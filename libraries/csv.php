@@ -196,27 +196,42 @@ class CSV {
      * Convert CSV to database table.
      *
      * @param   string  $table
+     * @param   boolean  $table_already_exists
+     * @param   boolean  $clear_existing_records
      * @return  void
      */
-    public function to_database($table = null)
+    public function to_database($table = null, $table_already_exists = false, $clear_existing_records = false)
     {
-        // if no table, build one
-        if (!$table)
+        // This method requires the use of an additional bundle
+        // called "DBUtil", found at: http://github.com/swt83/laravel-dbutil
+
+        // if no table, build one...
+        if (!$table_already_exists)
         {
-            $table = time();
-            $db = new Laravel\Database\Schema\Table($table);
-            $db->create();
-            $db->increments('id');
-            foreach ($this->columns as $value)
+            // make columns for table
+            $columns = array();
+            foreach ($this->columns as $c)
             {
-                $db->string($value, 100);
+                $columns[$c] = array(
+                    'type' => 'string',
+                    'length' => 200,
+                );
             }
-            Schema::execute($db);
+
+            // make table
+            DBUtil::make($table, $columns);
+        }
+
+        // if clear existing...
+        if ($clear_existing_records)
+        {
+            DBUtil::truncate($table);
         }
         
-        // insert rows
-        foreach ($this->rows as $key => $value)
+        // foreach row...
+        foreach ($this->rows as $value)
         {
+            // add to table
             DB::table($table)->insert($value);
         }
     }
