@@ -205,7 +205,7 @@ class CSV {
         // This method requires the use of an additional bundle
         // called "DBUtil", found at: http://github.com/swt83/laravel-dbutil
 
-        // if no table, build one...
+        // if no pre-existing table defined...
         if (!$table_already_exists)
         {
             // make columns for table
@@ -218,13 +218,19 @@ class CSV {
                 );
             }
 
+            // if table already exists...
+            if (DBUtil::exists($table))
+            {
+                // delete
+                DBUtil::drop($table);
+            }
+
             // make table
             DBUtil::make($table, $columns);
         }
-
-        // if clear existing...
-        if ($clear_existing_records)
+        else
         {
+            // if clear existing records...
             DBUtil::truncate($table);
         }
         
