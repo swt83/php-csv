@@ -47,9 +47,11 @@ class CSV {
      * Static constructor based on file.
      *
      * @param   string  $path
+     * @param   string  $delimiter
+     * @param   string  $enclosure
      * @return  object
      */
-    public static function open($path)
+    public static function open($path, $delimiter = ',', $enclosure = '"')
     {
         // fix mac csv issue
         ini_set("auto_detect_line_endings", true);
@@ -62,7 +64,7 @@ class CSV {
             
             // spin rows...
             $row = 1;
-            while ($fields = fgetcsv($input))
+            while ($fields = fgetcsv($input, 0, $delimiter, $enclosure))
             {
                 // if first row...
                 if ($row === 1)
