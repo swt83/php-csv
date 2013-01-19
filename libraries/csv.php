@@ -169,12 +169,27 @@ class CSV {
      * Convert CSV to file.
      *
      * @param   string  $path
-     * @return  boolean
+     * @return  void
      */
     public function to_file($path)
     {
-        // return
-        return File::put($path, $this->to_string());
+        // open file
+        $fp = fopen($path, 'w');
+
+        // write columns
+        if (sizeof($this->columns) > 0)
+        {
+            fputcsv($fp, $this->columns, ',', '"');
+        }
+        
+        // write rows
+        foreach ($this->rows as $fields)
+        {
+            fputcsv($fp, $fields, ',', '"');
+        }
+
+        // close file
+        fclose($fp);
     }
     
     /**
