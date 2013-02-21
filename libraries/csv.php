@@ -80,7 +80,20 @@ class CSV {
                 // if NOT first row...
                 else
                 {
-                    $rows[] = array_combine($columns, $fields);
+                    // combine
+                    $temp = array_combine($columns, $fields);
+
+                    // if no error...
+                    if ($temp)
+                    {
+                        // add to rows
+                        $rows[] = $temp;
+                    }
+                    else
+                    {
+                        // do not add row
+                        #die(var_dump($fields));
+                    }
                 }
                 $row++;
             }
