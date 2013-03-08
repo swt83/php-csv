@@ -36,7 +36,7 @@ $csv->columns(array('Header1', 'Header2'));
 $csv->rows($rows);
 
 // build from file
-$csv = CSV::open($path_to_file);
+$csv = CSV::from_file($path_to_file);
 ```
 
 You can do several things w/ a ``CSV`` object:

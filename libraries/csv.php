@@ -51,7 +51,7 @@ class CSV {
      * @param   string  $enclosure
      * @return  object
      */
-    public static function open($path, $delimiter = ',', $enclosure = '"')
+    public static function from_file($path, $delimiter = ',', $enclosure = '"')
     {
         // fix mac csv issue
         ini_set("auto_detect_line_endings", true);
@@ -70,10 +70,21 @@ class CSV {
                 if ($row === 1)
                 {
                     // spin headers...
+                    $count = 0;
                     foreach ($fields as $field)
                     {
-                        // slug headers, blanks not allowed
-                        $columns[] = Str::slug($field ? $field : uniqid(), '_');
+                        // get column name
+                        $name = Str::slug($field ? $field : uniqid(), '_');
+
+                        // check exists...
+                        if (in_array($name, $columns))
+                        {
+                            $count++;
+                            $name .= '_'.$count;
+                        }
+
+                        // save column name
+                        $columns[] = $name;
                     }
                 }
                 
@@ -112,6 +123,20 @@ class CSV {
         {
             return false;
         }
+    }
+
+    /**
+     * Legacy method.
+     *
+     * @param   string  $path
+     * @param   string  $delimiter
+     * @param   string  $enclosure
+     * @return  object
+     */
+    public static function open($path, $delimiter = ',', $enclosure = '"')
+    {
+        // alias
+        return static::from_file($path, $delimiter = ',', $enclosure = '"');
     }
 
     /**
