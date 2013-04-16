@@ -209,7 +209,7 @@ class CSV {
      * Convert CSV to file.
      *
      * @param   string  $path
-     * @return  void
+     * @return  boolean
      */
     public function to_file($path)
     {
@@ -230,6 +230,9 @@ class CSV {
 
         // close file
         fclose($fp);
+
+        // return exists
+        return file_exists($path);
     }
     
     /**
