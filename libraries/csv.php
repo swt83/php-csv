@@ -266,30 +266,22 @@ class CSV {
         // if no pre-existing table defined...
         if (!$table_already_exists)
         {
-            // make columns for table
-            $columns = array();
-            foreach ($this->columns as $c)
-            {
-                $columns[$c] = array(
-                    'type' => 'string',
-                    'length' => 200,
-                );
-            }
-
-            // if table already exists...
-            if (DBUtil::exists($table))
-            {
-                // delete
-                DBUtil::drop($table);
-            }
-
-            // make table
-            DBUtil::make($table, $columns);
+            // Exists drop
+            Schema::drop($table);
+            
+            // Create table
+            Schema::create($table, function($tbl){
+                foreach ($this->columns as $c)
+                {
+                    // create column; default length is 200
+                    $tbl->string($c);
+                }
+            });
         }
         else
         {
             // if clear existing records...
-            DBUtil::truncate($table);
+            DB::raw(sprintf("TRUNCATE TABLE `%s`",$table));
         }
         
         // foreach row...
