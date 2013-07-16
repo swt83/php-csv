@@ -281,7 +281,7 @@ class CSV {
         else
         {
             // if clear existing records...
-            DB::raw(sprintf("TRUNCATE TABLE `%s`",$table));
+            DB::query(sprintf("TRUNCATE TABLE `%s`",$table));
         }
         
         // foreach row...
