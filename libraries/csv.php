@@ -1,4 +1,5 @@
 <?php
+use Laravel\Database\Schema\Table;
 
 /**
  * A LaravelPHP package for working w/ CSV files.
@@ -266,30 +267,18 @@ class CSV {
         // if no pre-existing table defined...
         if (!$table_already_exists)
         {
-            // make columns for table
-            $columns = array();
-            foreach ($this->columns as $c)
-            {
-                $columns[$c] = array(
-                    'type' => 'string',
-                    'length' => 200,
-                );
+            $t = new Table($table);
+            $t->create();
+            foreach ($this->columns as $column) {
+                // create column; default length is 200
+                $t->string($column);
             }
-
-            // if table already exists...
-            if (DBUtil::exists($table))
-            {
-                // delete
-                DBUtil::drop($table);
-            }
-
-            // make table
-            DBUtil::make($table, $columns);
+            Schema::execute($t);
         }
         else
         {
             // if clear existing records...
-            DBUtil::truncate($table);
+            DB::query(sprintf("TRUNCATE TABLE `%s`",$table));
         }
         
         // foreach row...
