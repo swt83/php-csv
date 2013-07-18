@@ -10,10 +10,6 @@ In your ``application/bundles.php`` file add the following:
 'csv' => array('auto' => true),
 ```
 
-### Dependancies
-
-* [DBUtil](https://github.com/swt83/laravel-dbutil) - Only required if you use the ``to_database()`` method.
-
 ## Usage ##
 
 You basically are building an object that contains all the data, and then doing something w/ the object:
