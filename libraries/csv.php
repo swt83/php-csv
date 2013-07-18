@@ -1,4 +1,5 @@
 <?php
+use Laravel\Database\Schema\Table;
 
 /**
  * A LaravelPHP package for working w/ CSV files.
@@ -266,17 +267,13 @@ class CSV {
         // if no pre-existing table defined...
         if (!$table_already_exists)
         {
-            // Exists drop
-            Schema::drop($table);
-            
-            // Create table
-            Schema::create($table, function($tbl){
-                foreach ($this->columns as $c)
-                {
-                    // create column; default length is 200
-                    $tbl->string($c);
-                }
-            });
+            $t = new Table($table);
+            $t->create();
+            foreach ($this->columns as $column) {
+                // create column; default length is 200
+                $t->string($column);
+            }
+            Schema::execute($t);
         }
         else
         {
