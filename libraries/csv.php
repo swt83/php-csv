@@ -272,9 +272,6 @@ class CSV {
      */
     public function to_database($table = null, $table_already_exists = false, $clear_existing_records = false)
     {
-        // This method requires the use of an additional bundle
-        // called "DBUtil", found at: http://github.com/swt83/laravel-dbutil
-
         // if no pre-existing table defined...
         if (!$table_already_exists)
         {
