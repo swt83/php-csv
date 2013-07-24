@@ -174,6 +174,17 @@ class CSV {
     }
     
     /**
+     * Convert CSV to array.
+     *
+     * @return  array
+     */
+    public function to_array()
+    {
+        // return
+        return $this->rows;
+    }
+
+    /**
      * Convert CSV to string.
      *
      * @return  string

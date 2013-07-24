@@ -38,6 +38,9 @@ $csv = CSV::from_file($path_to_file);
 You can do several things w/ a ``CSV`` object:
 
 ```
+// to array
+$array = $csv->to_array();
+
 // to string
 $string = $csv->to_string();
 
