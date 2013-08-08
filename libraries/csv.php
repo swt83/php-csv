@@ -255,10 +255,22 @@ class CSV {
      */
     public function to_download($name)
     {
+        $ua = $_SERVER['HTTP_USER_AGENT'];
+
+        if (preg_match("/MSIE/", $ua)) {
+            $cd = 'attachment; filename="' . rawurlencode($name) . '"';
+
+        } else if (preg_match("/Firefox/", $ua)) {
+            $cd = 'attachment; filename*="utf8\'\'' . rawurlencode($name) . '"';
+
+        } else {
+            $cd = 'attachment; filename="' . $name . '"';
+        }
+        
         // response
         return Response::make($this->to_string(), 200, array(
             'content-type' => 'application/octet-stream',
-            'content-disposition' => 'attachment; filename="'.$name.'"',
+            'content-disposition' => $cd,
         ));
     }
     
