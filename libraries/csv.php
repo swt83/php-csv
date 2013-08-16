@@ -45,7 +45,21 @@ class CSV {
     }
     
     /**
-     * Static constructor based on file.
+     * Build object loaded w/ data from remote file.
+     *
+     * @param   string  $path
+     * @param   string  $delimiter
+     * @param   string  $enclosure
+     * @return  object
+     */
+    public static function from_url($path, $delimiter = ',', $enclosure = '"')
+    {
+        // looks like fopen() works with URLs!
+        return static::from_file($path, $delimiter, $enclosure);
+    }
+
+    /**
+     * Build object loaded w/ data from local file.
      *
      * @param   string  $path
      * @param   string  $delimiter
