@@ -1,5 +1,4 @@
 <?php
-use Laravel\Database\Schema\Table;
 
 /**
  * A LaravelPHP package for working w/ CSV files.
@@ -10,8 +9,10 @@ use Laravel\Database\Schema\Table;
  * @license    MIT License
  */
 
-class CSV {
+use Laravel\Database\Schema\Table;
 
+class CSV
+{
     /**
      * Store column headers.
      *
@@ -25,7 +26,7 @@ class CSV {
      * @var $row    array
      */
     public $rows = array();
-    
+
     /**
      * Newline character.
      *
@@ -43,90 +44,91 @@ class CSV {
         $class = __CLASS__;
         return new $class;
     }
-    
+
     /**
      * Build object loaded w/ data from remote file.
      *
      * @param   string  $path
+     * @param   boolean $first_row_as_headers
      * @param   string  $delimiter
      * @param   string  $enclosure
      * @return  object
      */
-    public static function from_url($path, $delimiter = ',', $enclosure = '"')
+    public static function from_url($path, $fist_row_as_headers = true, $delimiter = ',', $enclosure = '"')
     {
         // looks like fopen() works with URLs!
-        return static::from_file($path, $delimiter, $enclosure);
+        return static::from_file($path, $fist_row_as_headers, $delimiter, $enclosure);
     }
 
     /**
      * Build object loaded w/ data from local file.
      *
      * @param   string  $path
+     * @param   boolean $first_row_as_headers
      * @param   string  $delimiter
      * @param   string  $enclosure
      * @return  object
      */
-    public static function from_file($path, $delimiter = ',', $enclosure = '"')
+    public static function from_file($path, $fist_row_as_headers = true, $delimiter = ',', $enclosure = '"')
     {
         // fix mac csv issue
-        ini_set("auto_detect_line_endings", true);
-        
+        ini_set('auto_detect_line_endings', true);
+
         // open file...
         if ($input = @fopen($path, 'r'))
         {
             $columns = array();
             $rows = array();
-            
+
             // spin rows...
             $row = 1;
-            while ($fields = fgetcsv($input, 0, $delimiter, $enclosure))
-            {
-                // if first row...
-                if ($row === 1)
-                {
-                    // spin headers...
-                    $count = 0;
-                    foreach ($fields as $field)
-                    {
-                        // get column name
-                        $name = Str::slug($field ? $field : uniqid(), '_');
-
-                        // check exists...
-                        if (in_array($name, $columns))
-                        {
-                            $count++;
-                            $name .= '_'.$count;
+            while ($fields = fgetcsv($input, 0, $delimiter, $enclosure)) {
+                if ($fist_row_as_headers) {
+                    // if first row...
+                    if ($row == 1) {
+                        // spin headers...
+                        $count = 0;
+                        foreach ($fields as $field) {
+                            // get column name
+                            $name = Str::slug($field ? $field : uniqid(), '_');
+                            // check exists...
+                            if (in_array($name, $columns)) {
+                                $count++;
+                                $name .= '_'.$count;
+                            }
+                            // save column name
+                            $columns[] = $name;
                         }
-
-                        // save column name
-                        $columns[] = $name;
+                    } else {
+                        // combine
+                        $temp = array_combine($columns, $fields);
+                        // if no error...
+                        if ($temp) {
+                            // add to rows
+                            $rows[] = $temp;
+                        } else {
+                            // do not add row
+                            #die(var_dump($fields));
+                        }
                     }
-                }
-                
-                // if NOT first row...
-                else
-                {
+                } else {
                     // combine
-                    $temp = array_combine($columns, $fields);
-
+                    $temp = $fields;
                     // if no error...
-                    if ($temp)
-                    {
+                    if ($temp) {
                         // add to rows
                         $rows[] = $temp;
-                    }
-                    else
-                    {
+                    } else {
                         // do not add row
                         #die(var_dump($fields));
                     }
                 }
                 $row++;
             }
-            
+
             // close file
             fclose($input);
-            
+
             // build object
             $class = __CLASS__;
             $object = new $class;
@@ -163,8 +165,21 @@ class CSV {
     public function columns($array)
     {
         $this->columns = $array;
+
+        // if rows are set...
+        if (sizeof($this->rows) > 0) {
+            // if no error...
+            if (sizeof($this->rows[0]) == sizeof($this->columns)) {
+                // update all rows w/ new columns...
+                foreach ($this->rows as $key => $value) {
+                    $this->rows[$key] = array_combine($this->columns, $value);
+                }
+            } else {
+                trigger_error('Columns array must be proper size.');
+            }
+        }
     }
-    
+
     /**
      * Set all row values.
      *
@@ -175,7 +190,7 @@ class CSV {
     {
         $this->rows = $array;
     }
-    
+
     /**
      * Set individual row values.
      *
@@ -186,7 +201,7 @@ class CSV {
     {
         $this->rows[] = $array;
     }
-    
+
     /**
      * Convert CSV to array.
      *
@@ -206,31 +221,27 @@ class CSV {
     public function to_string()
     {
         $csv = '';
-        
+
         // labels
-        if (!empty($this->columns))
-        {
-            foreach ($this->columns as $label)
-            {
+        if (!empty($this->columns)) {
+            foreach ($this->columns as $label) {
                 $csv .= '"'.addslashes($label).'",';
             }
             $csv .= static::$newline;
         }
-        
+
         // rows
-        foreach($this->rows as $row)
-        {
-            foreach ($row as $field)
-            {
+        foreach($this->rows as $row) {
+            foreach ($row as $field) {
                 $csv .= '"'.addslashes($field).'",';
             }
             $csv .= static::$newline;
         }
-        
+
         // return
         return $csv;
     }
-    
+
     /**
      * Convert CSV to file.
      *
@@ -243,14 +254,12 @@ class CSV {
         $fp = fopen($path, 'w');
 
         // write columns
-        if (sizeof($this->columns) > 0)
-        {
+        if (sizeof($this->columns) > 0) {
             fputcsv($fp, $this->columns, ',', '"');
         }
-        
+
         // write rows
-        foreach ($this->rows as $fields)
-        {
+        foreach ($this->rows as $fields) {
             fputcsv($fp, $fields, ',', '"');
         }
 
@@ -260,7 +269,7 @@ class CSV {
         // return exists
         return file_exists($path);
     }
-    
+
     /**
      * Convert CSV to download (send headers and stream).
      *
@@ -275,7 +284,7 @@ class CSV {
             'content-disposition' => 'attachment; filename="'.$name.'"',
         ));
     }
-    
+
     /**
      * Convert CSV to database table.
      *
@@ -287,8 +296,7 @@ class CSV {
     public function to_database($table = null, $table_already_exists = false, $clear_existing_records = false)
     {
         // if no pre-existing table defined...
-        if (!$table_already_exists)
-        {
+        if (!$table_already_exists) {
             $t = new Table($table);
             $t->create();
             foreach ($this->columns as $column) {
@@ -296,19 +304,15 @@ class CSV {
                 $t->string($column);
             }
             Schema::execute($t);
-        }
-        else
-        {
+        } else {
             // if clear existing records...
             DB::query(sprintf("TRUNCATE TABLE `%s`",$table));
         }
-        
+
         // foreach row...
-        foreach ($this->rows as $value)
-        {
+        foreach ($this->rows as $value) {
             // add to table
             DB::table($table)->insert($value);
         }
     }
-
 }
