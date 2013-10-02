@@ -146,14 +146,15 @@ class CSV
      * Legacy method.
      *
      * @param   string  $path
+     * @param   boolean $first_row_as_headers
      * @param   string  $delimiter
      * @param   string  $enclosure
      * @return  object
      */
-    public static function open($path, $delimiter = ',', $enclosure = '"')
+    public static function open($path, $fist_row_as_headers = true, $delimiter = ',', $enclosure = '"')
     {
         // alias
-        return static::from_file($path, $delimiter = ',', $enclosure = '"');
+        return static::from_file($path, $fist_row_as_headers, $delimiter, $enclosure);
     }
 
     /**
