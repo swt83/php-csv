@@ -1,18 +1,11 @@
 <?php
 
-/**
- * A LaravelPHP package for working w/ CSV files.
- *
- * @package    CSV
- * @author     Scott Travis <scott.w.travis@gmail.com>
- * @link       http://github.com/swt83/laravel-csv
- * @license    MIT License
- */
+namespace Travis;
 
 use Laravel\Database\Schema\Table;
 
-class CSV
-{
+class CSV {
+
     /**
      * Store column headers.
      *
@@ -90,7 +83,7 @@ class CSV
                         $count = 0;
                         foreach ($fields as $field) {
                             // get column name
-                            $name = Str::slug($field ? $field : uniqid(), '_');
+                            $name = \Str::slug($field ? $field : uniqid(), '_');
                             // check exists...
                             if (in_array($name, $columns)) {
                                 $count++;
@@ -316,4 +309,5 @@ class CSV
             DB::table($table)->insert($value);
         }
     }
+
 }

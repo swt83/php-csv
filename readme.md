@@ -1,16 +1,26 @@
-# CSV for Laravel 3 #
+# CSV
 
-I work w/ CSV files all the time and needed a class to help me out.
+A PHP library for working w/ CSV files.
 
-## Install ##
+## Install
 
-In your ``application/bundles.php`` file add the following:
+Some methods are designed for use in Laravel.
 
+### Provider
+
+Register your service provider in ``app/config/app.php``:
+
+```php
+'Travis\CSV\Provider'
 ```
-'csv' => array('auto' => true),
+
+You may also wish to add an alias to remove the namespace:
+
+```php
+'CSV' => 'Travis\CSV'
 ```
 
-## Usage ##
+## Usage
 
 You basically are building an object that contains all the data, and then doing something w/ the object:
 
