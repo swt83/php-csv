@@ -24,7 +24,7 @@ You may also wish to add an alias to remove the namespace:
 
 You basically are building an object that contains all the data, and then doing something w/ the object:
 
-```
+```php
 // build from scratch
 $csv = new CSV;
 $csv->columns(array('Header1', 'Header2'));
@@ -47,7 +47,7 @@ $csv = CSV::from_file($path_to_file);
 
 You can do several things w/ a ``CSV`` object:
 
-```
+```php
 // to array
 $array = $csv->to_array();
 
