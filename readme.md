@@ -33,7 +33,7 @@ $rows = array(
     array('foo', 'bar'),
     array('foo', 'bar'),
 );
-$csv = new CSV;
+$csv = new Travis\CSV;
 $csv->columns(array('Header1', 'Header2'));
 $csv->rows($rows);
 
