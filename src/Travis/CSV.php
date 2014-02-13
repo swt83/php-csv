@@ -39,6 +39,33 @@ class CSV {
     }
 
     /**
+     * Build object loaded w/ data from provided string.
+     *
+     * @param   string  $string
+     * @param   boolean $first_row_as_headers
+     * @param   string  $delimiter
+     * @param   string  $enclosure
+     * @return  object
+     */
+    public static function from_string($string, $fist_row_as_headers = true, $delimiter = ',', $enclosure = '"')
+    {
+        // path
+        $path = storage_path().'/csvfromstring';
+
+        // save
+        \File::put($path, $string);
+
+        // alias
+        $object = static::from_file($path, $fist_row_as_headers, $delimiter, $enclosure);
+
+        // cleanup
+        \File::delete($path);
+
+        // return
+        return $object;
+    }
+
+    /**
      * Build object loaded w/ data from remote file.
      *
      * @param   string  $path

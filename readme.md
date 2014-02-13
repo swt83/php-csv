@@ -2,7 +2,7 @@
 
 A PHP library for working w/ CSV files.
 
-The ``to_database()`` method requires Laravel, while all other methods use native PHP.
+The ``to_database()``, ``to_download()``, and ``from_string()`` methods require Laravel.
 
 ## Install
 
@@ -37,8 +37,11 @@ $csv = new Travis\CSV;
 $csv->columns(array('Header1', 'Header2'));
 $csv->rows($rows);
 
+// build from string
+$csv = Travis\CSV::from_string($string);
+
 // build from file
-$csv = Travis\CSV::from_file($path_to_file);
+$csv = Travis\CSV::from_file($path);
 ```
 
 You can do several things w/ a ``CSV`` object:
