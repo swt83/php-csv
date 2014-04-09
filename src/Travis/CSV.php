@@ -211,6 +211,18 @@ class CSV {
                 // update all rows w/ new columns...
                 foreach ($this->rows as $key => $value)
                 {
+                    // prevent errors...
+                    if (sizeof($this->columns) < sizeof($value))
+                    {
+                        // drop leftovers
+                        $value = array_slice($value, 0, sizeof($this->columns));
+                    }
+                    elseif (sizeof($this->columns) < sizeof($value))
+                    {
+                        // do nothing
+                    }
+
+                    // update columns
                     $this->rows[$key] = array_combine($this->columns, $value);
                 }
             }
