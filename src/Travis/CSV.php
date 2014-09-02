@@ -115,20 +115,30 @@ class CSV {
                         {
                             // get column name
                             $name = \Str::slug($field ? $field : uniqid(), '_');
+
                             // check exists...
                             if (in_array($name, $columns))
                             {
                                 $count++;
                                 $name .= '_'.$count;
                             }
+
                             // save column name
                             $columns[] = $name;
                         }
                     }
                     else
                     {
+                        // if columns DO NOT match fields...
+                        if (sizeof($columns) !== sizeof($fields))
+                        {
+                            // die
+                            trigger_error('Column and field sizes must match.');
+                        }
+
                         // combine
                         $temp = array_combine($columns, $fields);
+
                         // if no error...
                         if ($temp)
                         {
@@ -146,6 +156,7 @@ class CSV {
                 {
                     // combine
                     $temp = $fields;
+
                     // if no error...
                     if ($temp)
                     {
