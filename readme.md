@@ -2,19 +2,14 @@
 
 A PHP library for working w/ CSV files.
 
-The ``to_database()``, ``to_download()``, and ``from_string()`` methods require Laravel.
-
 ## Install
 
 Normal install via Composer.
 
-### Provider
+### Tags
 
-Register your service provider in ``app/config/app.php``:
-
-```php
-'Travis\CSV\Provider'
-```
+- ``1.0`` for Laravel v4
+- ``1.1`` is framework agnostic
 
 ## Usage
 
@@ -50,15 +45,15 @@ You can do several things w/ a ``CSV`` object:
 // to array
 $array = $csv->to_array();
 
-// to string
-$string = $csv->to_string();
-
-// to download (sends headers)
-$csv->to_download();
-
 // to file
 $csv->to_file($path_to_file);
 
-// to database
-$csv->to_database($name_of_table, $table_already_exists = false, $clear_existing_records = false);
+// to string
+$string = $csv->to_string();
+
+// to download w/ headers (Laravel example)
+return \Response::make($csv->to_string(), 200, array(
+    'content-type' => 'application/octet-stream',
+    'content-disposition' => 'attachment; filename="'.$name.'"',
+));
 ```

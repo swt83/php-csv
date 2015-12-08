@@ -2,10 +2,8 @@
 
 namespace Travis;
 
-use Laravel\Database\Schema\Table;
-
-class CSV {
-
+class CSV
+{
     /**
      * Store column headers.
      *
@@ -53,13 +51,13 @@ class CSV {
         $path = storage_path().'/csvfromstring';
 
         // save
-        \File::put($path, $string);
+        file_put_contents($path, $string);
 
         // alias
         $object = static::from_file($path, $fist_row_as_headers, $delimiter, $enclosure);
 
         // cleanup
-        \File::delete($path);
+        unlink($path);
 
         // return
         return $object;
@@ -114,7 +112,7 @@ class CSV {
                         foreach ($fields as $field)
                         {
                             // get column name
-                            $name = \Str::slug($field ? $field : uniqid(), '_');
+                            $name = static::slug($field ? $field : uniqid(), '_');
 
                             // check exists...
                             if (in_array($name, $columns))
@@ -341,54 +339,13 @@ class CSV {
     }
 
     /**
-     * Convert CSV to download (send headers and stream).
+     * Return a string converted to a slug.
      *
-     * @param   string  $name
-     * @return  object
+     * @param   string  $str
+     * @return  string
      */
-    public function to_download($name)
+    protected static function slug($str)
     {
-        // response
-        return \Response::make($this->to_string(), 200, array(
-            'content-type' => 'application/octet-stream',
-            'content-disposition' => 'attachment; filename="'.$name.'"',
-        ));
+        return strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $str));
     }
-
-    /**
-     * Convert CSV to database table.
-     *
-     * @param   string  $table
-     * @param   boolean  $table_already_exists
-     * @param   boolean  $clear_existing_records
-     * @return  void
-     */
-    public function to_database($table = null, $table_already_exists = false, $clear_existing_records = false)
-    {
-        // if no pre-existing table defined...
-        if (!$table_already_exists)
-        {
-            $t = new \Table($table);
-            $t->create();
-            foreach ($this->columns as $column)
-            {
-                // create column; default length is 200
-                $t->string($column);
-            }
-            \Schema::execute($t);
-        }
-        else
-        {
-            // if clear existing records...
-            \DB::query(sprintf("TRUNCATE TABLE `%s`",$table));
-        }
-
-        // foreach row...
-        foreach ($this->rows as $value)
-        {
-            // add to table
-            \DB::table($table)->insert($value);
-        }
-    }
-
 }
