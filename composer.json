@@ -1,7 +1,7 @@
 {
     "name": "travis/csv",
-    "description": "A Laravel PHP library for working w/ CSV files.",
-    "homepage": "https://github.com/swt83/php-laravel-csv",
+    "description": "A PHP library for working w/ CSV files.",
+    "homepage": "https://github.com/swt83/php-csv",
     "license": "MIT",
     "authors": [
         {
