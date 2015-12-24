@@ -346,6 +346,6 @@ class CSV
      */
     protected static function slug($str)
     {
-        return strtolower(preg_replace('/[^A-Za-z0-9-]+/', '-', $str));
+        return strtolower(preg_replace('/[^A-Za-z0-9-]+/', '_', $str));
     }
 }
