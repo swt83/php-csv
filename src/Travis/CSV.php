@@ -112,7 +112,7 @@ class CSV
                         foreach ($fields as $field)
                         {
                             // get column name
-                            $name = static::slug($field ? $field : uniqid(), '_');
+                            $name = static::slug(trim($field ? $field : uniqid()), '_');
 
                             // check exists...
                             if (in_array($name, $columns))
