@@ -9,14 +9,14 @@ class CSV
      *
      * @var $columns    array
      */
-    public $columns = array();
+    public $columns = [];
 
     /**
      * Store row values.
      *
      * @var $row    array
      */
-    public $rows = array();
+    public $rows = [];
 
     /**
      * Newline character.
@@ -30,7 +30,7 @@ class CSV
      *
      * @return  object
      */
-    public static function forge()
+    public static function make()
     {
         $class = __CLASS__;
         return new $class;
@@ -45,7 +45,7 @@ class CSV
      * @param   string  $enclosure
      * @return  object
      */
-    public static function from_string($string, $fist_row_as_headers = true, $delimiter = ',', $enclosure = '"')
+    public static function fromString($string, $fist_row_as_headers = true, $delimiter = ',', $enclosure = '"')
     {
         // path
         $path = storage_path().'/csvfromstring';
@@ -72,7 +72,7 @@ class CSV
      * @param   string  $enclosure
      * @return  object
      */
-    public static function from_url($path, $fist_row_as_headers = true, $delimiter = ',', $enclosure = '"')
+    public static function fromUrl($path, $fist_row_as_headers = true, $delimiter = ',', $enclosure = '"')
     {
         // looks like fopen() works with URLs!
         return static::from_file($path, $fist_row_as_headers, $delimiter, $enclosure);
@@ -87,7 +87,7 @@ class CSV
      * @param   string  $enclosure
      * @return  object
      */
-    public static function from_file($path, $fist_row_as_headers = true, $delimiter = ',', $enclosure = '"')
+    public static function fromFile($path, $fist_row_as_headers = true, $delimiter = ',', $enclosure = '"')
     {
         // fix mac csv issue
         ini_set('auto_detect_line_endings', true);
@@ -187,27 +187,12 @@ class CSV
     }
 
     /**
-     * Legacy method.
-     *
-     * @param   string  $path
-     * @param   boolean $first_row_as_headers
-     * @param   string  $delimiter
-     * @param   string  $enclosure
-     * @return  object
-     */
-    public static function open($path, $fist_row_as_headers = true, $delimiter = ',', $enclosure = '"')
-    {
-        // alias
-        return static::from_file($path, $fist_row_as_headers, $delimiter, $enclosure);
-    }
-
-    /**
      * Set column headers (first row values).
      *
      * @param   array    $array
      * @return  void
      */
-    public function columns($array)
+    public function setColumns($array)
     {
         $this->columns = $array;
 
@@ -248,7 +233,7 @@ class CSV
      * @param   array    $array
      * @return  void
      */
-    public function rows($array)
+    public function setRows($array)
     {
         $this->rows = $array;
     }
@@ -259,9 +244,29 @@ class CSV
      * @param   array    $array
      * @return  void
      */
-    public function row($array)
+    public function addRow($array)
     {
         $this->rows[] = $array;
+    }
+
+    /**
+     * Return table columns.
+     *
+     * @return  array
+     */
+    public function getColumns()
+    {
+        return $this->columns;
+    }
+
+    /**
+     * Return table rows.
+     *
+     * @return  array
+     */
+    public function getRows()
+    {
+        return $this->rows;
     }
 
     /**
@@ -269,7 +274,7 @@ class CSV
      *
      * @return  array
      */
-    public function to_array()
+    public function toArray()
     {
         // return
         return $this->rows;
@@ -280,7 +285,7 @@ class CSV
      *
      * @return  string
      */
-    public function to_string()
+    public function toString()
     {
         $csv = '';
 
@@ -314,7 +319,7 @@ class CSV
      * @param   string  $path
      * @return  boolean
      */
-    public function to_file($path)
+    public function toFile($path)
     {
         // open file
         $fp = fopen($path, 'w');
@@ -347,5 +352,28 @@ class CSV
     protected static function slug($str)
     {
         return strtolower(preg_replace('/[^A-Za-z0-9-]+/', '_', $str));
+    }
+
+    /**
+     * Return all values in a column.
+     *
+     * @param   string  $column
+     * @return  array
+     */
+    public function getColumn($column)
+    {
+        $records = [];
+        foreach ($this->getRows() as $key => $value)
+        {
+            if (isset($value[$column]))
+            {
+                if ($value[$column])
+                {
+                    $records[] = $value[$column];
+                }
+            }
+        }
+
+        return $records;
     }
 }

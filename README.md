@@ -6,11 +6,6 @@ A PHP library for working w/ CSV files.
 
 Normal install via Composer.
 
-### Tags
-
-- ``1.0`` for Laravel v4
-- ``1.1`` is framework agnostic
-
 ## Usage
 
 You basically are building an object that contains all the data, and then doing something w/ the object:
@@ -18,41 +13,41 @@ You basically are building an object that contains all the data, and then doing 
 ```php
 // build from scratch
 $csv = new Travis\CSV;
-$csv->columns(array('Header1', 'Header2'));
-$csv->row(array('foo', 'bar'));
-$csv->row(array('foo', 'bar'));
-$csv->row(array('foo', 'bar'));
+$csv->setColumns(['Header1', 'Header2']);
+$csv->addRow(['foo', 'bar']);
+$csv->addRow(['foo', 'bar']);
+$csv->addRow(['foo', 'bar']);
 
 // build from scratch en mass
-$rows = array(
-    array('foo', 'bar'),
-    array('foo', 'bar'),
-);
+$rows = [
+    ['foo', 'bar'],
+    ['foo', 'bar'],
+];
 $csv = new Travis\CSV;
-$csv->columns(array('Header1', 'Header2'));
-$csv->rows($rows);
+$csv->setColumns(['Header1', 'Header2']);
+$csv->setRows($rows);
 
 // build from string
-$csv = Travis\CSV::from_string($string);
+$csv = Travis\CSV::fromString($string);
 
 // build from file
-$csv = Travis\CSV::from_file($path);
+$csv = Travis\CSV::fromFile($path);
 ```
 
 You can do several things w/ a ``CSV`` object:
 
 ```php
 // to array
-$array = $csv->to_array();
+$array = $csv->toArray();
 
 // to file
-$csv->to_file($path_to_file);
+$csv->toFile($path_to_file);
 
 // to string
-$string = $csv->to_string();
+$string = $csv->toString();
 
 // to download w/ headers (Laravel example)
-return \Response::make($csv->to_string(), 200, array(
+return \Response::make($csv->toString(), 200, array(
     'content-type' => 'application/octet-stream',
     'content-disposition' => 'attachment; filename="'.$name.'"',
 ));
