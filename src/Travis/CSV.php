@@ -294,7 +294,7 @@ class CSV
         {
             foreach ($this->columns as $label)
             {
-                $csv .= '"'.addslashes($label).'",';
+                $csv .= '"'.static::escape($label).'",';
             }
             $csv .= static::$newline;
         }
@@ -304,7 +304,7 @@ class CSV
         {
             foreach ($row as $field)
             {
-                $csv .= '"'.addslashes($field).'",';
+                $csv .= '"'.static::escape($field).'",';
             }
             $csv .= static::$newline;
         }
@@ -352,6 +352,17 @@ class CSV
     protected static function slug($str)
     {
         return strtolower(preg_replace('/[^A-Za-z0-9-]+/', '_', $str));
+    }
+
+    /**
+     * Escape the string.
+     *
+     * @param   string  $str
+     * @return  string
+     */
+    protected static function escape($str)
+    {
+        return str_replace('"', '\"', $str);
     }
 
     /**
