@@ -37,6 +37,12 @@ $csv = Travis\CSV::fromFile($path);
 You can do several things w/ a ``CSV`` object:
 
 ```php
+// get column labels
+$labels = $csv->getColumns();
+
+// pull all the values in a column
+$values = $csv->getColumn('email');
+
 // to array
 $array = $csv->toArray();
 
