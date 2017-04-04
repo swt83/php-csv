@@ -131,7 +131,7 @@ class CSV
                         if (sizeof($columns) !== sizeof($fields))
                         {
                             // die
-                            trigger_error('Column and field sizes must match.');
+                            throw new \Exception('Column and field sizes must match.');
                         }
 
                         // combine
@@ -222,7 +222,7 @@ class CSV
             }
             else
             {
-                trigger_error('Columns array must be proper size.');
+                throw new \Exception('Columns array must be proper size.');
             }
         }
     }
