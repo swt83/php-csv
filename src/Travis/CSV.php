@@ -75,7 +75,7 @@ class CSV
     public static function fromUrl($path, $fist_row_as_headers = true, $delimiter = ',', $enclosure = '"')
     {
         // looks like fopen() works with URLs!
-        return static::from_file($path, $fist_row_as_headers, $delimiter, $enclosure);
+        return static::fromFile($path, $fist_row_as_headers, $delimiter, $enclosure);
     }
 
     /**
