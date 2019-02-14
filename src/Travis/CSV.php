@@ -45,7 +45,7 @@ class CSV
      * @param   string  $enclosure
      * @return  object
      */
-    public static function fromString($string, $fist_row_as_headers = true, $delimiter = ',', $enclosure = '"')
+    public static function fromString($string, $is_fist_row_are_headers = true, $delimiter = ',', $enclosure = '"')
     {
         // path
         $path = storage_path().'/csvfromstring';
@@ -54,7 +54,7 @@ class CSV
         file_put_contents($path, $string);
 
         // alias
-        $object = static::from_file($path, $fist_row_as_headers, $delimiter, $enclosure);
+        $object = static::from_file($path, $is_fist_row_are_headers, $delimiter, $enclosure);
 
         // cleanup
         unlink($path);
@@ -72,10 +72,10 @@ class CSV
      * @param   string  $enclosure
      * @return  object
      */
-    public static function fromUrl($path, $fist_row_as_headers = true, $delimiter = ',', $enclosure = '"')
+    public static function fromUrl($path, $is_fist_row_are_headers = true, $delimiter = ',', $enclosure = '"')
     {
         // looks like fopen() works with URLs!
-        return static::fromFile($path, $fist_row_as_headers, $delimiter, $enclosure);
+        return static::fromFile($path, $is_fist_row_are_headers, $delimiter, $enclosure);
     }
 
     /**
@@ -85,9 +85,10 @@ class CSV
      * @param   boolean $first_row_as_headers
      * @param   string  $delimiter
      * @param   string  $enclosure
+     * @param   boolean $is_throw_error_on_defects
      * @return  object
      */
-    public static function fromFile($path, $fist_row_as_headers = true, $delimiter = ',', $enclosure = '"')
+    public static function fromFile($path, $is_fist_row_are_headers = true, $delimiter = ',', $enclosure = '"', $is_throw_error_on_defects = true)
     {
         // fix mac csv issue
         ini_set('auto_detect_line_endings', true);
@@ -102,7 +103,7 @@ class CSV
             $row = 1;
             while ($fields = fgetcsv($input, 0, $delimiter, $enclosure))
             {
-                if ($fist_row_as_headers)
+                if ($is_fist_row_are_headers)
                 {
                     // if first row...
                     if ($row == 1)
@@ -130,23 +131,26 @@ class CSV
                         // if columns DO NOT match fields...
                         if (sizeof($columns) !== sizeof($fields))
                         {
-                            // die
-                            throw new \Exception('Column and field sizes must match.');
+                            // if throwing errors...
+                            if ($is_throw_error_on_defects)
+                            {
+                                // die
+                                throw new \Exception('Column and field sizes must match.');
+                            }
                         }
 
-                        // combine
-                        $temp = array_combine($columns, $fields);
-
-                        // if no error...
-                        if ($temp)
-                        {
-                            // add to rows
-                            $rows[] = $temp;
-                        }
+                        // if they DO match...
                         else
                         {
-                            // do not add row
-                            #die(var_dump($fields));
+                            // combine
+                            $temp = array_combine($columns, $fields);
+
+                            // if no error...
+                            if ($temp)
+                            {
+                                // add to rows
+                                $rows[] = $temp;
+                            }
                         }
                     }
                 }
