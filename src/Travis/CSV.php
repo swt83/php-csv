@@ -54,7 +54,7 @@ class CSV
         file_put_contents($path, $string);
 
         // alias
-        $object = static::from_file($path, $is_fist_row_are_headers, $delimiter, $enclosure);
+        $object = static::fromFile($path, $is_fist_row_are_headers, $delimiter, $enclosure);
 
         // cleanup
         unlink($path);
